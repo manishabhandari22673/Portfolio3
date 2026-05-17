@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Manisha Bhandari — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Outfit:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --bg:#08080a;
+  --surface:#0f0f12;
+  --surface2:#141418;
+  --gold:#c9a96e;
+  --gold-dim:rgba(201,169,110,0.15);
+  --gold-line:rgba(201,169,110,0.2);
+  --cream:#ede6d8;
+  --muted:#7b7468;
+  --text:#c4bdb2;
+}
+
+html{scroll-behavior:smooth}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Outfit',sans-serif;
+  font-weight:300;
+  font-size:16px;
+  line-height:1.75;
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* ─── CUSTOM CURSOR ─── */
+#dot{
+  width:6px;height:6px;
+  background:var(--gold);
+  border-radius:50%;
+  position:fixed;
+  pointer-events:none;
+  z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:transform 0.08s;
+}
+#ring{
+  width:32px;height:32px;
+  border:1px solid rgba(201,169,110,0.45);
+  border-radius:50%;
+  position:fixed;
+  pointer-events:none;
+  z-index:9998;
+  transform:translate(-50%,-50%);
+  transition:left 0.12s ease,top 0.12s ease,width 0.25s,height 0.25s,border-color 0.25s;
+}
+body:has(a:hover) #ring,body:has(button:hover) #ring{
+  width:52px;height:52px;
+  border-color:rgba(201,169,110,0.7);
+}
+
+/* ─── NOISE TEXTURE ─── */
+body::after{
+  content:'';
+  position:fixed;inset:0;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:500;opacity:1;
+}
+
+/* ─── NAV ─── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  padding:1.6rem 7%;
+  display:flex;justify-content:space-between;align-items:center;
+  transition:background 0.5s,backdrop-filter 0.5s,border-color 0.5s;
+  border-bottom:1px solid transparent;
+}
+nav.stuck{
+  background:rgba(8,8,10,0.88);
+  backdrop-filter:blur(20px);
+  border-color:var(--gold-line);
+}
+.logo{
+  font-family:'Libre Baskerville',serif;
+  font-style:italic;
+  font-size:1.2rem;
+  color:var(--gold);
+  text-decoration:none;
+  letter-spacing:0.02em;
+}
+.nav-ul{list-style:none;display:flex;gap:2.8rem}
+.nav-ul a{
+  font-size:0.7rem;letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;font-weight:400;
+  position:relative;transition:color 0.3s;
+}
+.nav-ul a::after{
+  content:'';position:absolute;bottom:-4px;left:0;right:0;
+  height:1px;background:var(--gold);
+  transform:scaleX(0);transform-origin:left;transition:transform 0.3s;
+}
+.nav-ul a:hover{color:var(--gold)}
+.nav-ul a:hover::after{transform:scaleX(1)}
+
+.burger{display:none;background:none;border:none;cursor:none;flex-direction:column;gap:5px;padding:4px}
+.burger span{width:22px;height:1px;background:var(--cream);display:block;transition:0.3s}
+
+/* ─── HERO ─── */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  justify-content:center;align-items:flex-start;
+  padding:0 7%;
+  position:relative;overflow:hidden;
+}
+
+/* Big ambient glow */
+.hero-glow{
+  position:absolute;
+  top:50%;left:50%;
+  width:900px;height:600px;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(ellipse at 60% 50%, rgba(201,169,110,0.06) 0%, transparent 60%);
+  pointer-events:none;
+}
+
+/* Geometric grid lines */
+.hero-grid{
+  position:absolute;inset:0;overflow:hidden;pointer-events:none;
+  opacity:1;
+}
+.hero-grid svg{width:100%;height:100%}
+
+.hero-content{position:relative;z-index:2;max-width:760px}
+
+.hero-kicker{
+  display:flex;align-items:center;gap:1rem;
+  font-size:0.68rem;letter-spacing:0.3em;
+  text-transform:uppercase;color:var(--gold);font-weight:400;
+  margin-bottom:2rem;
+  opacity:0;animation:up 0.9s 0.3s ease forwards;
+}
+.kicker-line{width:32px;height:1px;background:var(--gold);opacity:0.6}
+
+.hero-name{
+  font-family:'Libre Baskerville',serif;
+  font-size:clamp(3.8rem,9vw,8.5rem);
+  font-weight:700;
+  line-height:0.92;
+  letter-spacing:-0.025em;
+  color:var(--cream);
+  opacity:0;animation:up 1s 0.5s ease forwards;
+}
+.hero-name i{
+  display:block;
+  font-style:italic;
+  font-weight:400;
+  color:var(--gold);
+  font-size:0.92em;
+}
+
+.hero-tagline{
+  margin-top:2.2rem;
+  font-size:0.92rem;
+  letter-spacing:0.08em;
+  color:var(--muted);
+  font-weight:300;
+  opacity:0;animation:up 0.9s 0.8s ease forwards;
+}
+
+.hero-cta{
+  margin-top:3rem;
+  display:flex;gap:1.2rem;flex-wrap:wrap;
+  opacity:0;animation:up 0.9s 1s ease forwards;
+}
+.btn-outline{
+  display:inline-block;
+  padding:0.8rem 2.2rem;
+  border:1px solid var(--gold-line);
+  color:var(--cream);font-size:0.75rem;
+  letter-spacing:0.15em;text-transform:uppercase;
+  text-decoration:none;font-weight:400;
+  transition:border-color 0.3s,color 0.3s,background 0.3s;
+}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
+.btn-solid{
+  display:inline-block;
+  padding:0.8rem 2.2rem;
+  background:var(--gold);
+  color:#08080a;font-size:0.75rem;
+  letter-spacing:0.15em;text-transform:uppercase;
+  text-decoration:none;font-weight:500;
+  transition:opacity 0.3s,transform 0.3s;
+}
+.btn-solid:hover{opacity:0.88;transform:translateY(-2px)}
+
+/* Scroll indicator */
+.scroll-hint{
+  position:absolute;bottom:2.5rem;left:7%;
+  display:flex;align-items:center;gap:1rem;
+  font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted);
+  opacity:0;animation:up 0.8s 1.4s ease forwards;
+}
+.scroll-bar{
+  width:40px;height:1px;
+  background:linear-gradient(90deg,var(--gold),transparent);
+  animation:expand 2s 2s ease-in-out infinite;
+  transform-origin:left;
+}
+@keyframes expand{0%,100%{transform:scaleX(0.3);opacity:0.5}50%{transform:scaleX(1);opacity:1}}
+
+@keyframes up{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── SECTIONS ─── */
+.sec{padding:8rem 7%}
+.inner{max-width:980px;margin:0 auto}
+
+.sec-label{
+  font-size:0.65rem;letter-spacing:0.32em;text-transform:uppercase;
+  color:var(--gold);font-weight:400;display:block;margin-bottom:0.8rem;
+}
+.rule{
+  width:48px;height:1px;
+  background:linear-gradient(90deg,var(--gold),transparent);
+  margin-bottom:2rem;
+}
+.sec-title{
+  font-family:'Libre Baskerville',serif;
+  font-size:clamp(2rem,4.5vw,3.4rem);
+  font-weight:400;line-height:1.12;
+  color:var(--cream);margin-bottom:3.5rem;
+}
+.sec-title em{font-style:italic;color:var(--gold)}
+
+/* ─── ABOUT ─── */
+.about-sec{background:var(--surface);border-top:1px solid var(--gold-line);border-bottom:1px solid var(--gold-line)}
+
+.about-layout{
+  display:grid;grid-template-columns:240px 1fr;
+  gap:6rem;align-items:center;
+}
+
+/* Portrait placeholder — elegant monogram */
+.portrait{
+  aspect-ratio:3/4;
+  background:var(--surface2);
+  border:1px solid var(--gold-line);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:0.5rem;
+  position:relative;overflow:hidden;
+}
+.portrait::before{
+  content:'';
+  position:absolute;top:-30px;left:-30px;
+  width:120px;height:120px;
+  border:1px solid var(--gold-line);
+  border-radius:50%;
+}
+.portrait::after{
+  content:'';
+  position:absolute;bottom:-30px;right:-30px;
+  width:90px;height:90px;
+  border:1px solid var(--gold-line);
+  border-radius:50%;
+}
+.portrait-mono{
+  font-family:'Libre Baskerville',serif;
+  font-size:3.8rem;font-style:italic;font-weight:400;
+  color:var(--gold);position:relative;z-index:1;
+}
+.portrait-sub{
+  font-size:0.62rem;letter-spacing:0.25em;
+  text-transform:uppercase;color:var(--muted);
+  position:relative;z-index:1;
+}
+
+.about-text p{
+  font-size:1.02rem;color:var(--text);
+  line-height:1.95;font-weight:300;
+  border-left:2px solid var(--gold-line);
+  padding-left:1.5rem;
+}
+
+.about-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;margin-top:2.5rem;
+  background:var(--gold-line);
+  border:1px solid var(--gold-line);
+}
+.stat{
+  background:var(--surface);
+  padding:1.2rem 1rem;text-align:center;
+}
+.stat-n{
+  font-family:'Libre Baskerville',serif;
+  font-size:2rem;font-weight:700;
+  color:var(--gold);display:block;line-height:1;
+}
+.stat-l{font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);font-weight:400}
+
+/* ─── EXPERIENCE ─── */
+.exp-wrap{display:flex;flex-direction:column;gap:1.5rem}
+
+.exp-item{
+  border:1px solid var(--gold-line);
+  background:var(--surface);
+  padding:2.8rem 3rem;
+  position:relative;overflow:hidden;
+  transition:border-color 0.4s;
+  display:grid;grid-template-columns:auto 1fr;
+  gap:2.5rem;align-items:flex-start;
+}
+.exp-item::before{
+  content:'';position:absolute;
+  left:0;top:0;bottom:0;width:2px;
+  background:linear-gradient(to bottom,var(--gold),transparent);
+  transform:scaleY(0);transform-origin:top;
+  transition:transform 0.5s ease;
+}
+.exp-item:hover{border-color:rgba(201,169,110,0.35)}
+.exp-item:hover::before{transform:scaleY(1)}
+
+.exp-num{
+  font-family:'Libre Baskerville',serif;
+  font-size:1.1rem;font-style:italic;
+  color:rgba(201,169,110,0.35);
+  line-height:1;padding-top:0.2rem;
+  white-space:nowrap;
+}
+.exp-body h3{
+  font-family:'Libre Baskerville',serif;
+  font-size:1.35rem;font-weight:400;
+  color:var(--cream);margin-bottom:0.7rem;
+}
+.exp-body p{font-size:0.97rem;color:var(--muted);line-height:1.9;font-weight:300}
+.exp-badge{
+  display:inline-block;margin-top:1rem;
+  font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;
+  border:1px solid var(--gold-line);
+  color:var(--gold);padding:0.28rem 0.8rem;font-weight:400;
+}
+
+/* ─── PROJECTS ─── */
+.proj-sec{background:var(--surface);border-top:1px solid var(--gold-line);border-bottom:1px solid var(--gold-line)}
+
+.proj-card{
+  border:1px solid var(--gold-line);
+  background:var(--surface2);
+  display:grid;grid-template-columns:1fr 160px;
+  transition:border-color 0.4s,transform 0.4s;
+  overflow:hidden;
+}
+.proj-card:hover{border-color:rgba(201,169,110,0.4);transform:translateY(-5px)}
+
+.proj-body{padding:3rem}
+
+.proj-tag-row{display:flex;align-items:center;gap:0.8rem;margin-bottom:1.4rem}
+.proj-tag{
+  font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;
+  border:1px solid var(--gold);color:var(--gold);
+  padding:0.28rem 0.8rem;font-weight:400;
+}
+.proj-year{font-size:0.65rem;color:var(--muted);letter-spacing:0.12em}
+
+.proj-card h3{
+  font-family:'Libre Baskerville',serif;
+  font-size:2.1rem;font-weight:400;font-style:italic;
+  color:var(--cream);margin-bottom:0.8rem;line-height:1.1;
+}
+.proj-card p{color:var(--muted);font-size:0.95rem;line-height:1.85;margin-bottom:1.8rem;font-weight:300}
+
+.proj-link{
+  display:inline-flex;align-items:center;gap:0.7rem;
+  font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--gold);text-decoration:none;font-weight:400;
+  transition:gap 0.3s;
+}
+.proj-link:hover{gap:1.1rem}
+.proj-link-arrow{font-size:1rem}
+
+.proj-side{
+  border-left:1px solid var(--gold-line);
+  background:linear-gradient(180deg,var(--surface) 0%,var(--surface2) 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;
+  padding:2rem 1rem;
+}
+.proj-icon-ring{
+  width:64px;height:64px;
+  border:1px solid var(--gold-line);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;
+  color:var(--gold);
+  text-decoration:none;
+  transition:background 0.3s,transform 0.35s,border-color 0.3s;
+}
+.proj-icon-ring:hover{
+  background:var(--gold);color:var(--bg);
+  border-color:var(--gold);
+  transform:rotate(45deg) scale(1.1);
+}
+.proj-side-label{
+  font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);
+  writing-mode:vertical-rl;transform:rotate(180deg);
+}
+
+/* ─── CONTACT ─── */
+.contact-intro{
+  font-size:1.05rem;color:var(--muted);
+  line-height:1.9;font-weight:300;
+  max-width:500px;margin-bottom:3rem;
+}
+
+.contact-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:1px;
+  background:var(--gold-line);
+  border:1px solid var(--gold-line);
+}
+.c-card{
+  background:var(--surface2);
+  padding:2rem 1.8rem;
+  text-decoration:none;
+  display:block;
+  transition:background 0.3s;
+  position:relative;overflow:hidden;
+}
+.c-card::after{
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:1px;
+  background:var(--gold);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform 0.4s;
+}
+.c-card:hover{background:var(--surface)}
+.c-card:hover::after{transform:scaleX(1)}
+
+.c-icon{font-size:1.2rem;margin-bottom:1rem;display:block;color:var(--gold)}
+.c-type{
+  font-size:0.62rem;letter-spacing:0.24em;text-transform:uppercase;
+  color:var(--gold);display:block;margin-bottom:0.4rem;font-weight:400;
+}
+.c-val{font-size:0.88rem;color:var(--cream);font-weight:300;word-break:break-all;line-height:1.5}
+
+/* ─── FOOTER ─── */
+footer{
+  border-top:1px solid var(--gold-line);
+  padding:2.2rem 7%;
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--surface);
+}
+.footer-left{
+  font-family:'Libre Baskerville',serif;
+  font-style:italic;color:var(--gold);font-size:1rem;
+}
+.footer-right{font-size:0.68rem;color:var(--muted);letter-spacing:0.1em}
+
+/* ─── REVEAL ─── */
+.r{opacity:0;transform:translateY(26px);transition:opacity 0.85s ease,transform 0.85s ease}
+.r.on{opacity:1;transform:none}
+.d1{transition-delay:0.12s}.d2{transition-delay:0.22s}.d3{transition-delay:0.32s}
+
+/* ─── MOBILE ─── */
+@media(max-width:860px){
+  .burger{display:flex}
+  .nav-ul{
+    display:none;position:fixed;top:72px;left:0;right:0;
+    background:rgba(8,8,10,0.97);backdrop-filter:blur(20px);
+    flex-direction:column;gap:0;
+    border-bottom:1px solid var(--gold-line);
+  }
+  .nav-ul.open{display:flex}
+  .nav-ul a{padding:1rem 7%;display:block;border-bottom:1px solid var(--gold-line)}
+  .about-layout{grid-template-columns:1fr;gap:2.5rem}
+  .portrait{max-width:180px;margin:0 auto;aspect-ratio:1/1}
+  .about-stats{grid-template-columns:repeat(3,1fr)}
+  .exp-item{grid-template-columns:1fr;gap:0.5rem;padding:2rem}
+  .proj-card{grid-template-columns:1fr}
+  .proj-side{display:none}
+  footer{flex-direction:column;gap:0.5rem;text-align:center}
+  body{cursor:auto}
+  #dot,#ring{display:none}
+}
+</style>
+</head>
+<body>
+
+<div id="dot"></div>
+<div id="ring"></div>
+
+<!-- ─ NAV ─ -->
+<nav id="nav">
+  <a class="logo" href="#top">M. Bhandari</a>
+  <button class="burger" id="burger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-ul" id="navul">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ─ HERO ─ -->
+<section class="hero" id="top">
+  <div class="hero-glow"></div>
+
+  <div class="hero-grid" aria-hidden="true">
+    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <!-- Vertical rules -->
+      <line x1="120" y1="0" x2="120" y2="900" stroke="rgba(201,169,110,0.04)" stroke-width="0.5"/>
+      <line x1="1320" y1="0" x2="1320" y2="900" stroke="rgba(201,169,110,0.04)" stroke-width="0.5"/>
+      <!-- Horizontal rules -->
+      <line x1="0" y1="140" x2="1440" y2="140" stroke="rgba(201,169,110,0.035)" stroke-width="0.5"/>
+      <line x1="0" y1="760" x2="1440" y2="760" stroke="rgba(201,169,110,0.035)" stroke-width="0.5"/>
+      <!-- Diagonal accent -->
+      <line x1="1100" y1="0" x2="1440" y2="480" stroke="rgba(201,169,110,0.05)" stroke-width="0.5"/>
+      <line x1="1200" y1="0" x2="1440" y2="320" stroke="rgba(201,169,110,0.03)" stroke-width="0.5"/>
+      <!-- Corner brackets -->
+      <polyline points="80,60 40,60 40,100" fill="none" stroke="rgba(201,169,110,0.18)" stroke-width="0.8"/>
+      <polyline points="1360,60 1400,60 1400,100" fill="none" stroke="rgba(201,169,110,0.18)" stroke-width="0.8"/>
+      <polyline points="80,840 40,840 40,800" fill="none" stroke="rgba(201,169,110,0.18)" stroke-width="0.8"/>
+      <polyline points="1360,840 1400,840 1400,800" fill="none" stroke="rgba(201,169,110,0.18)" stroke-width="0.8"/>
+      <!-- Large arc -->
+      <path d="M 720 900 A 520 520 0 0 1 720 -140" fill="none" stroke="rgba(201,169,110,0.03)" stroke-width="0.5"/>
+    </svg>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-kicker">
+      <span class="kicker-line"></span>
+      Portfolio 2025
+      <span class="kicker-line"></span>
+    </div>
+
+    <h1 class="hero-name">
+      Manisha
+      <i>Bhandari</i>
+    </h1>
+
+    <p class="hero-tagline">English Literature Student &nbsp;·&nbsp; Siliguri, West Bengal</p>
+
+    <div class="hero-cta">
+      <a href="#projects" class="btn-solid">View My Work</a>
+      <a href="#contact" class="btn-outline">Get In Touch</a>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-bar"></div>
+    Scroll to explore
+  </div>
+</section>
+
+<!-- ─ ABOUT ─ -->
+<section class="sec about-sec" id="about">
+  <div class="inner">
+    <div class="about-layout">
+
+      <div class="r">
+        <div class="portrait">
+          <div class="portrait-mono">MB</div>
+          <div class="portrait-sub">Est. 2025</div>
+        </div>
+      </div>
+
+      <div class="r d1">
+        <span class="sec-label">About Me</span>
+        <div class="rule"></div>
+        <h2 class="sec-title">A mind shaped<br/>by <em>words &amp; wonder</em></h2>
+        <p class="about-text" style="border-left:2px solid rgba(201,169,110,0.2);padding-left:1.5rem;font-size:1.01rem;color:var(--text);line-height:1.95;font-weight:300;">
+          I am an English Literature student at Surya Sen Mahavidyalaya from Siliguri, West Bengal. Words have always been my compass — through the pages of novels, the rhythm of poetry, and the quiet spaces where language meets life. Literature, for me, is not just a subject; it is a way of seeing the world more clearly.
+        </p>
+
+        <div class="about-stats r d2">
+          <div class="stat">
+            <span class="stat-n">Lit.</span>
+            <span class="stat-l">Major</span>
+          </div>
+          <div class="stat">
+            <span class="stat-n">NGO</span>
+            <span class="stat-l">Volunteer</span>
+          </div>
+          <div class="stat">
+            <span class="stat-n">WB</span>
+            <span class="stat-l">India</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─ EXPERIENCE ─ -->
+<section class="sec" id="experience">
+  <div class="inner">
+    <div class="r">
+      <span class="sec-label">Experience</span>
+      <div class="rule"></div>
+      <h2 class="sec-title">Where I've<br/><em>contributed</em></h2>
+    </div>
+
+    <div class="exp-wrap">
+      <div class="exp-item r d1">
+        <div class="exp-num">01</div>
+        <div class="exp-body">
+          <h3>Community &amp; Social Impact</h3>
+          <p>I help people — through an NGO — make a new discovery every day, and learn from it. Each interaction becomes an opportunity to grow, both for those I work with and for myself. Compassion and curiosity sit at the heart of everything I do, turning small acts of service into lasting change.</p>
+          <span class="exp-badge">Volunteer Work</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─ PROJECTS ─ -->
+<section class="sec proj-sec" id="projects">
+  <div class="inner">
+    <div class="r">
+      <span class="sec-label">Projects</span>
+      <div class="rule"></div>
+      <h2 class="sec-title">Things I've<br/><em>built</em></h2>
+    </div>
+
+    <div class="proj-card r d1">
+      <div class="proj-body">
+        <div class="proj-tag-row">
+          <span class="proj-tag">Web Application</span>
+          <span class="proj-year">2025</span>
+        </div>
+        <h3>Book Library App</h3>
+        <p>A digital sanctuary for book lovers. Discover, organise, and explore titles with ease — built from a deep love of reading and a desire to make literature more accessible to everyone.</p>
+        <a class="proj-link" href="https://book-library-115577.vercel.app/" target="_blank" rel="noopener">
+          Visit Project <span class="proj-link-arrow">→</span>
+        </a>
+      </div>
+
+      <div class="proj-side">
+        <a class="proj-icon-ring" href="https://book-library-115577.vercel.app/" target="_blank" rel="noopener" aria-label="Open project">
+          ↗
+        </a>
+        <span class="proj-side-label">View Live</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─ CONTACT ─ -->
+<section class="sec" id="contact">
+  <div class="inner">
+    <div class="r">
+      <span class="sec-label">Contact</span>
+      <div class="rule"></div>
+      <h2 class="sec-title">Let's<br/><em>connect</em></h2>
+    </div>
+
+    <p class="contact-intro r d1">Feel free to reach out — whether it's a collaboration, a conversation about books, or simply a hello.</p>
+
+    <div class="contact-grid r d2">
+      <a class="c-card" href="mailto:manishabhandari22673@gmail.com">
+        <span class="c-icon">✉</span>
+        <span class="c-type">Email</span>
+        <span class="c-val">manishabhandari22673@gmail.com</span>
+      </a>
+      <div class="c-card">
+        <span class="c-icon">☎</span>
+        <span class="c-type">Phone</span>
+        <span class="c-val">815xxxxxx</span>
+      </div>
+      <a class="c-card" href="https://github.com/settings/profile" target="_blank" rel="noopener">
+        <span class="c-icon">⌥</span>
+        <span class="c-type">GitHub</span>
+        <span class="c-val">github.com/manisha</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─ FOOTER ─ -->
+<footer>
+  <span class="footer-left">Manisha Bhandari</span>
+  <span class="footer-right">&copy; 2025 &nbsp;·&nbsp; All rights reserved</span>
+</footer>
+
+<script>
+// Cursor
+const dot = document.getElementById('dot');
+const ring = document.getElementById('ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  dot.style.left=mx+'px';dot.style.top=my+'px';
+});
+(function loop(){
+  rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12;
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  requestAnimationFrame(loop);
+})();
+
+// Nav sticky
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>{
+  nav.classList.toggle('stuck',window.scrollY>50);
+});
+
+// Burger
+const burger=document.getElementById('burger');
+const navul=document.getElementById('navul');
+burger.addEventListener('click',()=>navul.classList.toggle('open'));
+navul.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>navul.classList.remove('open')));
+
+// Reveal
+const els=document.querySelectorAll('.r');
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target);}});
+},{threshold:0.1});
+els.forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
